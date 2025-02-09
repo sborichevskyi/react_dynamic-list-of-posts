@@ -25,14 +25,22 @@ const AppContent: React.FC = () => {
   } = useAppContext();
 
   useEffect(() => {
-    setLoading(CurLoading.Users);
-    getUsers()
-      .then(users => {
+    const fetchUsers = async () => {
+      setLoading(CurLoading.Users);
+
+      try {
+        const users = await getUsers();
+
         setAllUsers(users);
         setErrorMessage(CurError.Empty);
-      })
-      .catch(() => setErrorMessage(CurError.LoadUsers))
-      .finally(() => setLoading(CurLoading.Empty));
+      } catch (error) {
+        setErrorMessage(CurError.LoadUsers);
+      } finally {
+        setLoading(CurLoading.Empty);
+      }
+    };
+
+    fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,16 +89,10 @@ const AppContent: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open':
-                  activePost && activePost.userId === selectedUser?.id,
-              },
-            )}
+            className={classNames('tile is-parent is-8-desktop Sidebar', {
+              'Sidebar--open':
+                activePost && activePost.userId === selectedUser?.id,
+            })}
           >
             <div className="tile is-child box is-success ">
               <PostDetails />

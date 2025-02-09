@@ -25,13 +25,23 @@ export const PostDetails: React.FC = () => {
   } = useAppContext();
 
   useEffect(() => {
-    setLoading(CurLoading.Comms);
+    const getCommentsFromServer = async () => {
+      setLoading(CurLoading.Comms);
+      try {
+        const commentsFromServer = await getCommentsByPostId(activePost!.id);
+
+        setComments(commentsFromServer);
+      } catch (error) {
+        setErrorMessage(CurError.LoadComs);
+      } finally {
+        setLoading(CurLoading.Empty);
+      }
+    };
+
     if (activePost) {
-      getCommentsByPostId(activePost.id)
-        .then(commsFromServer => setComments(commsFromServer))
-        .catch(() => setErrorMessage(CurError.LoadComs))
-        .finally(() => setLoading(CurLoading.Empty));
+      getCommentsFromServer();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePost]);
 

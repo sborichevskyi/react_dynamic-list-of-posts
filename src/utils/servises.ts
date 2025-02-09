@@ -40,14 +40,14 @@ export const deleteComment = async (
   setErrorMessage: React.Dispatch<React.SetStateAction<CurError | string>>,
 ) => {
   setLoading(CurLoading.DelComs);
-
-  return client
-    .delete(`/comments/${comId}`)
-    .then(() => {
-      setComments(latestComms => latestComms.filter(com => com.id !== comId));
-    })
-    .catch(() => setErrorMessage(CurError.DelComs))
-    .finally(() => setLoading(CurLoading.Empty));
+  try {
+    await client.delete(`/comments/${comId}`);
+    setComments(latestComms => latestComms.filter(com => com.id !== comId));
+  } catch (error) {
+    setErrorMessage(CurError.DelComs);
+  } finally {
+    setLoading(CurLoading.Empty);
+  }
 };
 
 export const clearComment = (
@@ -59,15 +59,13 @@ export const clearComment = (
   setErrorEmail: React.Dispatch<React.SetStateAction<boolean>>,
   setErrorText: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
-  return () => {
-    setName('');
-    setEmail('');
-    setText('');
-    setErrorMessage(CurError.Empty);
-    setErrorName(false);
-    setErrorEmail(false);
-    setErrorText(false);
-  };
+  setName('');
+  setEmail('');
+  setText('');
+  setErrorMessage(CurError.Empty);
+  setErrorName(false);
+  setErrorEmail(false);
+  setErrorText(false);
 };
 
 export const addComment = async (
@@ -102,15 +100,16 @@ export const addComment = async (
 
   setLoading(CurLoading.AddComs);
 
-  return client
-    .post(`/comments`, commentData)
-    .then(() => {
-      setComments(prev => [...prev, newComment]);
-      setNewComment(commentData);
-      setText('');
-    })
-    .catch(() => setErrorMessage(CurError.AddComs))
-    .finally(() => setLoading(CurLoading.Empty));
+  try {
+    await client.post(`/comments`, commentData);
+    setComments(prev => [...prev, newComment]);
+    setNewComment(commentData);
+    setText('');
+  } catch (error) {
+    setErrorMessage(CurError.AddComs);
+  } finally {
+    setLoading(CurLoading.Empty);
+  }
 };
 
 export const validateForm = (

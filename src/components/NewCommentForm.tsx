@@ -194,15 +194,17 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={clearComment(
-              setName,
-              setEmail,
-              setText,
-              setErrorMessage,
-              setErrorName,
-              setErrorEmail,
-              setErrorText,
-            )}
+            onClick={() =>
+              clearComment(
+                setName,
+                setEmail,
+                setText,
+                setErrorMessage,
+                setErrorName,
+                setErrorEmail,
+                setErrorText,
+              )
+            }
           >
             Clear
           </button>
